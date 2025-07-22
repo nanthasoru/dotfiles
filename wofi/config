@@ -1,0 +1,15 @@
+show=drun
+term=kitty
+
+width=40%
+height=50%
+
+prompt=Search...
+
+normal_window=true
+location=right
+insensitive=true
+no_actions=true
+
+allow_images=true
+image_size=48
