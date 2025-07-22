@@ -1,0 +1,12 @@
+btop/
+cava/
+dconf/
+htop/
+obs-studio/
+pipewire/
+pulse/
+systemd/
+mimeapps.list
+pavucontrol.ini
+user-dirs.dirs
+user-dirs.locale
