@@ -9,5 +9,3 @@ elif [[ -f /usr/sbin/apt ]]; then
 elif [[ -f /usr/sbin/dnf ]]; then
     sudo dnf install -y gcc make git ripgrep fd-find unzip neovim
 fi
-
-sudo npm i -g vscode-langservers-extracted typescript typescript-language-server bash-language-server

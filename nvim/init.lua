@@ -74,6 +74,9 @@ rtp:prepend(lazypath)
 
 require('lazy').setup({
 
+  -- Import all plugins
+  { import = 'plugins' },
+
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
@@ -85,7 +88,7 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
-          comments = { italic = false }, -- Disable italics in comments
+          comments = { italic = true }, -- Disable italics in comments
         },
       }
 
@@ -95,9 +98,6 @@ require('lazy').setup({
       vim.cmd.colorscheme 'tokyonight-night'
     end,
   },
-
-  -- PLUGINS SEPARATE FILES
-  { import = 'plugins' },
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
@@ -117,12 +117,3 @@ require('lazy').setup({
     },
   },
 })
-
--- MANUALLY ENABLINGS NPM LANGUAGE SERVER
-
-vim.lsp.enable 'html'
-vim.lsp.enable 'cssmodules_ls'
-vim.lsp.enable 'css_variables'
-vim.lsp.enable 'cssls'
-vim.lsp.enable 'ts_ls'
-vim.lsp.enable 'bashls'
