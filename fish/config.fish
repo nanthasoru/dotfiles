@@ -11,7 +11,7 @@ end
 function system_maintance
 
     echo "Updating system"
-    sudo pacman -Syu
+    sudo paru -Syu
 
     echo "Clearing pacman cache"
     set pacman_cache_space_used "$(du -sh /var/cache/pacman/pkg/)"

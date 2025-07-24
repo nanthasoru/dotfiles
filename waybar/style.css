@@ -1,28 +1,22 @@
 * {
   font-family: "Jetbrains Mono Nerdfont";
-  font-weight: normal;
 }
 
 #waybar {
-  background: transparent;
+  background: #1a1b26;
   color: #fff;
 }
 
 #workspaces button {
-  color: rgba(255, 255, 255, 100);
+  color: #fff;
 }
 
 #workspaces button:hover {
   background: transparent;
-  border-radius: 100px;
 }
 
-#workspaces {
-  background: #32344a;
-  border-radius: 100px;
-}
-
-#network,
+#battery,
+#pulseaudio,
 #tray,
 #workspaces {
   margin-left: 12px;
@@ -31,9 +25,7 @@
 #temperature,
 #memory,
 #cpu,
-#pulseaudio,
-#battery,
-#clock {
+#network {
   margin-right: 12px;
 }
 
@@ -46,8 +38,6 @@
 #pulseaudio,
 #battery,
 #clock {
-  background: #32344a;
-  border-radius: 100px;
   padding-left: 12px;
   padding-right: 12px;
 }
