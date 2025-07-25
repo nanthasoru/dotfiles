@@ -8,6 +8,7 @@ pulse/
 systemd/
 gtk-3.0/
 StardewValley/
+chromium/
 glib-2.0
 mimeapps.list
 pavucontrol.ini

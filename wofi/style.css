@@ -1,37 +1,32 @@
-window {
-  background-color: #000;
-}
-
 * {
   font-family: "Jetbrains Mono Nerdfont";
+  font-size: 17px;
   color: #fff;
 }
 
+#window,
+#expander-box,
 #input {
-  background-color: #000;
+  background-color: #1a1b26;
+}
+
+#input {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  /* Remove the blue outline around the search bar */
   outline: none;
+  border: none;
   box-shadow: none;
-  border: 0;
-  border-radius: 0;
-  font-size: 1.5rem;
-  padding: 1rem;
-}
-
-#inner-box {
-  font-size: 1.5rem;
-}
-
-#img {
-  margin: 15px 15px;
 }
 
 #entry {
-  border-radius: 1.5rem;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-left: 2rem;
 }
 
 #entry:selected {
-  background-color: #131313;
+  background-color: #444b6a;
   outline: none;
 }

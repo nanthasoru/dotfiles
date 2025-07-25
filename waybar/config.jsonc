@@ -3,43 +3,63 @@
   "margin-left": 20,
   "margin-right": 20,
 
+  // All modules : battery, pulseaudio, tray, hyprland/workspaces, clock, cpu, temperature, memory, network
+
   "layer": "top",
   "position": "top",
-  "modules-left": ["battery", "pulseaudio", "tray", "hyprland/workspaces"],
-  "modules-center": ["clock"],
-  "modules-right": ["cpu", "temperature", "memory", "network"],
+  "modules-left": ["battery", "cpu", "temperature", "memory"],
+  "modules-center": ["hyprland/workspaces"],
+  "modules-right": ["tray", "pulseaudio", "network", "clock"],
+
+  "hyprland/workspaces": {
+    "format": "",
+    "show-special": true,
+    "active-only": false,
+    "all-outputs": true,
+    "on-scroll-up": "hyprctl dispatch workspace r-1",
+    "on-scroll-down": "hyprctl dispatch workspace r+1",
+        "persistent-workspaces": {
+      "*": 10
+    }
+  },
 
   "network": {
-    "format": "{icon} {essid}",
+    "format": " {bandwidthUpOctets}  {bandwidthDownOctets}",
+    "format-alt": "{icon} {essid}",
     "format-icons": ["󰤯 ", "󰤟 ", "󰤢 ", "󰤨 "],
     "format-ethernet": "󰈁 ",
     "format-disconnected": "󰤮 ",
     "format-disabled": "󰟢 ",
-    "interval": 2,
+    "interval": 1,
+    "tooltip": false,
   },
 
   "cpu": {
     "format": "  {usage}%",
-    "interval": 2,
+    "interval": 3,
   },
 
   "temperature": {
     "format": "{icon} {temperatureC}°C",
-    "interval": 2,
+    "interval": 3,
     "format-icons": ["", "", "", ""],
+    "tooltip": false,
   },
 
   "memory": {
-    "format": "  {percentage}%",
-    "interval": 2,
+    "format": "  {used} GiB",
+    "format-alt": "  {percentage}%",
+    "interval": 3,
+    "tooltip": true,
+    "tooltip-format": "{used}/{total} GiB",
   },
 
   "pulseaudio": {
     "format": "{icon} {volume}%",
     "format-bluetooth": "󰦢 ",
-    "format-muted": "󰝟 ",
+    "format-muted": " ",
     "format-icons": [" ", " ", " "],
-    "on-click": "pavucontrol",
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
   },
 
   "battery": {
@@ -49,7 +69,8 @@
   },
 
   "clock": {
-    "format": " {:%H:%M:%S} ",
-    "interval": 1,
+    "format": "󱑂  {:%R} ",
+    "format-alt": "  {:%d %a %B %Y} ",
+    "tooltip": false,
   }
 }

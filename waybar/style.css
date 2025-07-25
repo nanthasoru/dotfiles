@@ -8,25 +8,32 @@
 }
 
 #workspaces button {
+  color: #787c99;
+}
+
+#workspaces button.active {
   color: #fff;
 }
 
+#workspaces button.empty {
+  color: #444b6a;
+}
+
+#workspaces button.special {
+  color: #ad8ee6;
+}
+
+#workspaces button.urgent {
+  color: #f7768e;
+}
+
 #workspaces button:hover {
-  background: transparent;
-}
-
-#battery,
-#pulseaudio,
-#tray,
-#workspaces {
-  margin-left: 12px;
-}
-
-#temperature,
-#memory,
-#cpu,
-#network {
-  margin-right: 12px;
+  box-shadow: none;
+  text-shadow: none;
+  background: none;
+  border: none;
+  transition: none;
+  color: #7aa2f7;
 }
 
 #window,
@@ -40,4 +47,18 @@
 #clock {
   padding-left: 12px;
   padding-right: 12px;
+}
+
+#battery,
+#cpu,
+#temperature,
+#memory {
+  margin-right: 12px;
+}
+
+#tray,
+#pulseaudio,
+#network,
+#clock {
+  margin-left: 12px;
 }
