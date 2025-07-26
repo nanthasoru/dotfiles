@@ -1,81 +1,81 @@
--- https://github.com/neovim/nvim-lspconfig
 return {
-    'neovim/nvim-lspconfig',
-    dependencies = {
-        "saghen/blink.cmp",
-        {
-            "mason-org/mason.nvim",
-            opts = {}
-        },
-        {
-            "mason-org/mason-lspconfig.nvim",
-            opts = {},
-        },
-        {
-            'WhoIsSethDaniel/mason-tool-installer.nvim',
-            opts = {
-                ensure_installed = {
-                    "lua-language-server",
-                    "vim-language-server",
-                    "stylua",
-                }
-            }
-        }
-    },
+	"neovim/nvim-lspconfig",
 
-    opts = {
-        servers = {
-            lua_ls = {}
-        },
+	dependencies = {
+		{
+			"mason-org/mason.nvim", -- Mason Portable LSP, linter... package manager
+			opts = {},
+		},
+		{
+			"mason-org/mason-lspconfig.nvim", -- bridge
+			opts = {},
+		},
+		{
+			"WhoIsSethDaniel/mason-tool-installer.nvim", -- really cool to automate the installation of packages
+			opts = {
+				ensure_installed = {
+					"vim-language-server",
+					"lua-language-server",
+					"stylua",
+					"jdtls",
+					"google-java-format",
+					"rust-analyzer",
+					"rustfmt",
+					"fish-lsp",
+					"bash-language-server",
+					"hyprls",
+					"cssls",
+				},
+			},
+		},
+		{
+			"saghen/blink.cmp", -- completion
+			dependencies = { "rafamadriz/friendly-snippets" },
+			version = "1.*",
+			opts = {
+				-- 'default', 'super-tab', 'enter', 'none'
+				keymap = { preset = "super-tab" },
 
-        vim.api.nvim_create_autocmd('LspAttach', {
-            group = vim.api.nvim_create_augroup('my.lsp', {}),
-            callback = function(args)
-                local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-                if client:supports_method('textDocument/implementation') then
-                    -- Create a keymap for vim.lsp.buf.implementation ...
-                end
+				appearance = {
+					nerd_font_variant = "mono",
+				},
 
-                -- Enable auto-completion. Note: Use CTRL-Y to select an item. |complete_CTRL-Y|
-                if client:supports_method('textDocument/completion') then
-                    -- Optional: trigger autocompletion on EVERY keypress. May be slow!
-                    -- local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
-                    -- client.server_capabilities.completionProvider.triggerCharacters = chars
+				completion = { documentation = { auto_show = true } },
 
-                    vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
-                end
+				sources = {
+					default = { "lsp", "path", "snippets", "buffer" },
+				},
 
-                -- Auto-format ("lint") on save.
-                -- Usually not needed if server supports "textDocument/willSaveWaitUntil".
-                if not client:supports_method('textDocument/willSaveWaitUntil')
-                    and client:supports_method('textDocument/formatting') then
-                    vim.api.nvim_create_autocmd('BufWritePre', {
-                        group = vim.api.nvim_create_augroup('my.lsp', { clear = false }),
-                        buffer = args.buf,
-                        callback = function()
-                            vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
-                        end,
-                    })
-                end
-            end,
-        })
-    },
+				fuzzy = { implementation = "lua" },
+			},
+			opts_extend = { "sources.default" },
+		},
+		-- LSP support
+		{
+			"folke/lazydev.nvim",
+			ft = "lua",
+			opts = {
+				library = {
+					{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+				},
+			},
+		},
+		{
+			"mfussenegger/nvim-jdtls",
+		},
+	},
 
-    config = function(_, opts)
-        local lspconfig = require('lspconfig')
-        for server, config in pairs(opts.servers) do
-            -- passing config.capabilities to blink.cmp merges with the capabilities in your
-            -- `opts[server].capabilities, if you've defined it
-            config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
-            lspconfig[server].setup(config)
-        end
-    end,
+	opts = {
+		servers = {
+			lua_ls = {},
+		},
+	},
 
-    -- example calling setup directly for each LSP
-    config = function()
-        local capabilities = require('blink.cmp').get_lsp_capabilities()
-        local lspconfig = require('lspconfig')
-
-        lspconfig['lua_ls'].setup({ capabilities = capabilities })
-    end
+	config = function(_, opts)
+		local lspconfig = require("lspconfig")
+		for server, config in pairs(opts.servers) do
+			config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
+			lspconfig[server].setup(config)
+		end
+	end,
 }

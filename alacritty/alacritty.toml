@@ -5,7 +5,7 @@ blur = true
 
 [font]
 normal = { family = "Jetbrains Mono Nerdfont", style = "Regular" }
-size = 17
+size = 13
 
 # Colors (Tokyo Night)
 # Source https//github.com/zatchheems/tokyo-night-alacritty-theme

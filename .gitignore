@@ -9,6 +9,7 @@ systemd/
 gtk-3.0/
 StardewValley/
 chromium/
+go/
 glib-2.0
 mimeapps.list
 pavucontrol.ini

@@ -11,32 +11,49 @@ vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 
--- KEY BINDINGS
-vim.keymap.set("n", "<leader><leader>", vim.cmd.Ex)
-
 -- PLUGIN MANAGER : lazy.nvim
 -- See https://lazy.folke.io/installation
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-    if vim.v.shell_error ~= 0 then
-        vim.api.nvim_echo({
-            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-            { out,                            "WarningMsg" },
-            { "\nPress any key to exit..." },
-        }, true, {})
-        vim.fn.getchar()
-        os.exit(1)
-    end
+	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+	if vim.v.shell_error ~= 0 then
+		vim.api.nvim_echo({
+			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+			{ out, "WarningMsg" },
+			{ "\nPress any key to exit..." },
+		}, true, {})
+		vim.fn.getchar()
+		os.exit(1)
+	end
 end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    spec = {
-        { import = "plugins" },
-    },
-    install = { colorscheme = { "habamax" } },
-    checker = { enabled = true },
+	spec = {
+		{ import = "plugins" },
+	},
+	install = { colorscheme = { "habamax" } },
+	checker = { enabled = true },
+})
+
+-- KEY BINDINGS
+vim.keymap.set("n", "<leader>n", "<Cmd>Neotree toggle<CR>")
+vim.keymap.set("n", "<leader>e", vim.cmd.Ex, { desc = "Explorer" })
+
+vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
+
+vim.keymap.set("n", "<leader>t", vim.cmd.TransparentToggle, { desc = "Toggle transparency" })
+
+local builtin = require("telescope.builtin")
+vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Find Files" })
+vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "Search current line" })
+vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Search in files" })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = "*",
+	callback = function(args)
+		require("conform").format({ bufnr = args.buf })
+	end,
 })
