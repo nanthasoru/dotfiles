@@ -1,15 +1,55 @@
 -- VIM SETTINGS
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.o.number = true
-vim.o.undofile = true
 
-vim.o.autoindent = true
+vim.o.number = true
+vim.o.relativenumber = true
+
+vim.o.undofile = true
 vim.o.smartindent = true
 
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
+vim.o.softtabstop = 4
+
+vim.o.termguicolors = true
+
+-- disabling mouse
+vim.keymap.set("", "<up>", "<nop>", { noremap = true })
+vim.keymap.set("", "<down>", "<nop>", { noremap = true })
+
+vim.opt.mouse = ""
+
+-- Diagnostics (show error on the buffer)
+-- Yanked from https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua
+
+vim.diagnostic.config({
+	severity_sort = true,
+	float = { border = "sharp", source = "if_many" },
+	underline = { severity = vim.diagnostic.severity.ERROR },
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "󰅚 ",
+			[vim.diagnostic.severity.WARN] = "󰀪 ",
+			[vim.diagnostic.severity.INFO] = "󰋽 ",
+			[vim.diagnostic.severity.HINT] = "󰌶 ",
+		},
+	},
+	virtual_text = {
+		source = "if_many",
+		spacing = 2,
+		format = function(diagnostic)
+			local diagnostic_message = {
+				[vim.diagnostic.severity.ERROR] = diagnostic.message,
+				[vim.diagnostic.severity.WARN] = diagnostic.message,
+				[vim.diagnostic.severity.INFO] = diagnostic.message,
+				[vim.diagnostic.severity.HINT] = diagnostic.message,
+			}
+			return diagnostic_message[diagnostic.severity]
+		end,
+	},
+})
 
 -- PLUGIN MANAGER : lazy.nvim
 -- See https://lazy.folke.io/installation
@@ -46,6 +86,10 @@ vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 
 vim.keymap.set("n", "<leader>t", vim.cmd.TransparentToggle, { desc = "Toggle transparency" })
 
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+
+vim.keymap.set("n", "<leader>l", vim.cmd.Lazy, { desc = "Plugin manager" })
+vim.keymap.set("n", "<leader>m", vim.cmd.Mason, { desc = "lsp, linter, formatter manager" })
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "Search current line" })
