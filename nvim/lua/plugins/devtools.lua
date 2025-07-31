@@ -11,23 +11,16 @@ return {
 			"MunifTanjim/nui.nvim",
 			"nvim-tree/nvim-web-devicons",
 		},
+		opts = {
+			filesystem = {
+				filtered_items = {
+					visible = true,
+				},
+			},
+		},
 	},
 	{
 		"nvim-telescope/telescope.nvim",
 		opts = {},
-	},
-	{
-		"folke/which-key.nvim",
-		event = "VeryLazy",
-		opts = {},
-		keys = {
-			{
-				"<leader>?",
-				function()
-					require("which-key").show({ global = false })
-				end,
-				desc = "Buffer Local Keymaps (which-key)",
-			},
-		},
 	},
 }

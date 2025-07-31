@@ -3,38 +3,20 @@ return {
 
 	dependencies = {
 		{
-			"mason-org/mason.nvim", -- Mason Portable LSP, linter... package manager
+			"mason-org/mason.nvim",
 			opts = {},
 		},
 		{
-			"mason-org/mason-lspconfig.nvim", -- bridge
+			"mason-org/mason-lspconfig.nvim",
 			opts = {},
 		},
 		{
-			"WhoIsSethDaniel/mason-tool-installer.nvim", -- really cool to automate the installation of packages
-			opts = {
-				ensure_installed = {
-					"vim-language-server",
-					"lua-language-server",
-					"stylua",
-					"jdtls",
-					"google-java-format",
-					"rust-analyzer",
-					"rustfmt",
-					"fish-lsp",
-					"bash-language-server",
-					"hyprls",
-					"cssls",
-				},
-			},
-		},
-		{
-			"saghen/blink.cmp", -- completion
+			"saghen/blink.cmp",
 			dependencies = { "rafamadriz/friendly-snippets" },
 			version = "1.*",
 			opts = {
 				-- 'default', 'super-tab', 'enter', 'none'
-				keymap = { preset = "super-tab" },
+				keymap = { preset = "default" },
 
 				appearance = {
 					nerd_font_variant = "mono",
@@ -50,18 +32,11 @@ return {
 			},
 			opts_extend = { "sources.default" },
 		},
-		-- LSP support
 		{
-			"folke/lazydev.nvim",
-			ft = "lua",
+			"WhoIsSethDaniel/mason-tool-installer.nvim",
 			opts = {
-				library = {
-					{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
-				},
+				ensure_installed = TOOLS,
 			},
-		},
-		{
-			"mfussenegger/nvim-jdtls",
 		},
 	},
 

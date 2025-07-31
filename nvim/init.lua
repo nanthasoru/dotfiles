@@ -1,24 +1,19 @@
 -- VIM SETTINGS
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
 vim.o.number = true
 vim.o.relativenumber = true
-
 vim.o.undofile = true
 vim.o.smartindent = true
-
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
-
 vim.o.termguicolors = true
 
 -- disabling mouse
 vim.keymap.set("", "<up>", "<nop>", { noremap = true })
 vim.keymap.set("", "<down>", "<nop>", { noremap = true })
-
 vim.opt.mouse = ""
 
 -- Diagnostics (show error on the buffer)
@@ -51,6 +46,14 @@ vim.diagnostic.config({
 	},
 })
 
+-- Format file on save if possible
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = "*",
+	callback = function(args)
+		require("conform").format({ bufnr = args.buf })
+	end,
+})
+
 -- PLUGIN MANAGER : lazy.nvim
 -- See https://lazy.folke.io/installation
 
@@ -72,7 +75,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	spec = {
-		{ import = "plugins" },
+		{ import = "plugins.config" },
 	},
 	install = { colorscheme = { "habamax" } },
 	checker = { enabled = true },
@@ -80,24 +83,12 @@ require("lazy").setup({
 
 -- KEY BINDINGS
 vim.keymap.set("n", "<leader>n", "<Cmd>Neotree toggle<CR>")
-vim.keymap.set("n", "<leader>e", vim.cmd.Ex, { desc = "Explorer" })
-
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 
 vim.keymap.set("n", "<leader>t", vim.cmd.TransparentToggle, { desc = "Toggle transparency" })
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
-vim.keymap.set("n", "<leader>l", vim.cmd.Lazy, { desc = "Plugin manager" })
-vim.keymap.set("n", "<leader>m", vim.cmd.Mason, { desc = "lsp, linter, formatter manager" })
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "Search current line" })
 vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Search in files" })
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*",
-	callback = function(args)
-		require("conform").format({ bufnr = args.buf })
-	end,
-})
