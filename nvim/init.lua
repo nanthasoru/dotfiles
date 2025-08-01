@@ -1,27 +1,22 @@
--- VIM SETTINGS
+-- settings
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+
 vim.o.number = true
 vim.o.relativenumber = true
+
 vim.o.undofile = true
-vim.o.smartindent = true
+vim.o.clipboard = "unnamedplus"
+vim.o.ignorecase = true
+
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
-vim.o.softtabstop = 4
-vim.o.termguicolors = true
-
--- disabling mouse
-vim.keymap.set("", "<up>", "<nop>", { noremap = true })
-vim.keymap.set("", "<down>", "<nop>", { noremap = true })
-vim.opt.mouse = ""
+vim.o.smartindent = true
 
 -- Diagnostics (show error on the buffer)
 -- Yanked from https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua
-
 vim.diagnostic.config({
 	severity_sort = true,
-	float = { border = "sharp", source = "if_many" },
 	underline = { severity = vim.diagnostic.severity.ERROR },
 	signs = {
 		text = {
@@ -46,7 +41,76 @@ vim.diagnostic.config({
 	},
 })
 
--- Format file on save if possible
+-- lazy.nvim install
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"--branch=stable",
+		"https://github.com/folke/lazy.nvim.git",
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- plugins
+require("lazy").setup({
+	spec = {
+		-- colorscheme
+		{
+			"folke/tokyonight.nvim",
+			lazy = false,
+			priority = 1000,
+			config = function()
+				vim.cmd(":colorscheme tokyonight")
+			end,
+		},
+		-- language server protocol
+		{
+			"neovim/nvim-lspconfig",
+			dependencies = {
+				"saghen/blink.cmp",
+				"rafamadriz/friendly-snippets",
+			},
+			config = function()
+				local lsp = require("lspconfig")
+				-- Servers : lua-language-server java-language-server rust-analyzer pyright vscode-langservers-extracted typescript typescript-language-server clang
+				lsp.lua_ls.setup({})
+				lsp.java_language_server.setup({})
+				lsp.rust_analyzer.setup({})
+				lsp.pyright.setup({})
+				lsp.cssls.setup({})
+				lsp.html.setup({})
+				lsp.ts_ls.setup({})
+				lsp.clangd.setup({})
+
+				require("blink.cmp").setup({})
+			end,
+		},
+		-- formatters : stylua rustfmt google-java-format python-black
+		{
+			"stevearc/conform.nvim",
+			opts = {
+				formatters_by_ft = {
+					lua = { "stylua" },
+					rust = { "rustfmt" },
+					java = { "google-java-format" },
+					python = { "black" },
+				},
+			},
+		},
+		-- fuzzy finder
+		{
+			"nvim-telescope/telescope.nvim",
+			opts = {},
+		},
+		checker = { enabled = true },
+	},
+})
+
+-- Format file on save if possible with conform
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*",
 	callback = function(args)
@@ -54,40 +118,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	end,
 })
 
--- PLUGIN MANAGER : lazy.nvim
--- See https://lazy.folke.io/installation
-
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-	if vim.v.shell_error ~= 0 then
-		vim.api.nvim_echo({
-			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-			{ out, "WarningMsg" },
-			{ "\nPress any key to exit..." },
-		}, true, {})
-		vim.fn.getchar()
-		os.exit(1)
-	end
-end
-vim.opt.rtp:prepend(lazypath)
-
-require("lazy").setup({
-	spec = {
-		{ import = "plugins.config" },
-	},
-	install = { colorscheme = { "habamax" } },
-	checker = { enabled = true },
-})
-
--- KEY BINDINGS
-vim.keymap.set("n", "<leader>n", "<Cmd>Neotree toggle<CR>")
-
-vim.keymap.set("n", "<leader>t", vim.cmd.TransparentToggle, { desc = "Toggle transparency" })
-
+-- Keymaps
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
-
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "Search current line" })
