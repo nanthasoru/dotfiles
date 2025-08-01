@@ -76,9 +76,9 @@ require("lazy").setup({
 			},
 			config = function()
 				local lsp = require("lspconfig")
-				-- Servers : lua-language-server java-language-server rust-analyzer pyright vscode-langservers-extracted typescript typescript-language-server clang
+				-- Servers : lua-language-server jdtls rust-analyzer pyright vscode-langservers-extracted typescript typescript-language-server clang
 				lsp.lua_ls.setup({})
-				lsp.java_language_server.setup({})
+				lsp.jdtls.setup({})
 				lsp.rust_analyzer.setup({})
 				lsp.pyright.setup({})
 				lsp.cssls.setup({})
