@@ -1,6 +1,8 @@
 vim.g.mapleader = " "
 vim.o.number = true
 vim.o.relativenumber = true
+vim.o.signcolumn = "no"
+vim.o.winborder = "single"
 vim.o.undofile = true
 vim.o.clipboard = "unnamedplus"
 vim.o.ignorecase = true
@@ -18,33 +20,19 @@ vim.pack.add({
 
 vim.cmd(":colorscheme tokyonight")
 
-local lsp = require("lspconfig")
--- Servers : lua-language-server jdtls rust-analyzer pyright vscode-langservers-extracted typescript typescript-language-server clang
-local servers = {
-	lsp.lua_ls,
-	lsp.jdtls,
-	lsp.rust_analyzer,
-	lsp.pyright,
-	lsp.cssls,
-	lsp.html,
-	lsp.ts_ls,
-	lsp.clangd,
-}
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(ev)
+		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		if client:supports_method("textDocument/completion") then
+			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+		end
+	end,
+})
+vim.cmd("set completeopt+=noselect")
+vim.keymap.set("i", "<C-space>", vim.lsp.completion.get)
 
--- completion
-for _, server in ipairs(servers) do
-	-- Yanked from : https://blog.viktomas.com/graph/neovim-native-built-in-lsp-autocomplete/
-	server.setup({
-		on_attach = function(client, bufnr)
-			vim.lsp.completion.enable(true, client.id, bufnr, {
-				autotrigger = true,
-				convert = function(item)
-					return { abbr = item.label:gsub("%b()", "") }
-				end,
-			})
-		end,
-	})
-end
+-- Servers : lua-language-server jdtls rust-analyzer pyright vscode-langservers-extracted typescript typescript-language-server clang
+vim.lsp.enable({ "lua_ls", "jdtls", "rust_analyzer", "pyright", "cssls", "html", "ts_ls", "clangd" })
 
 -- formatters : stylua rustfmt clang-format python-black
 require("conform").setup({
@@ -60,7 +48,6 @@ require("conform").setup({
 		python = { "black" },
 	},
 })
-vim.cmd("set completeopt+=noselect")
 
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*",
@@ -73,7 +60,6 @@ require("mini.pick").setup({})
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "<leader>s", ":Pick files<CR>")
-vim.keymap.set("i", "<C-space>", vim.lsp.completion.get)
 
 -- Yanked from https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua
 vim.diagnostic.config({
