@@ -69,14 +69,29 @@ require("lazy").setup({
 			config = function()
 				local lsp = require("lspconfig")
 				-- Servers : lua-language-server jdtls rust-analyzer pyright vscode-langservers-extracted typescript typescript-language-server clang
-				lsp.lua_ls.setup({})
-				lsp.jdtls.setup({})
-				lsp.rust_analyzer.setup({})
-				lsp.pyright.setup({})
-				lsp.cssls.setup({})
-				lsp.html.setup({})
-				lsp.ts_ls.setup({})
-				lsp.clangd.setup({})
+				local servers = {
+					lsp.lua_ls,
+					lsp.jdtls,
+					lsp.rust_analyzer,
+					lsp.pyright,
+					lsp.cssls,
+					lsp.html,
+					lsp.ts_ls,
+					lsp.clangd,
+				}
+
+				for _, server in ipairs(servers) do
+					server.setup({
+						on_attach = function(client, bufnr)
+							vim.lsp.completion.enable(true, client.id, bufnr, {
+								autotrigger = true,
+								convert = function(item)
+									return { abbr = item.label:gsub("%b()", "") }
+								end,
+							})
+						end,
+					})
+				end
 			end,
 		},
 		-- formatters : stylua rustfmt clang-format python-black
@@ -103,16 +118,6 @@ require("lazy").setup({
 	},
 })
 
--- autocompletion
-vim.api.nvim_create_autocmd("LspAttach", {
-	callback = function(ev)
-		local client = vim.lsp.get_client_by_id(ev.data.client_id)
-		if client:supports_method("textDocument/completion") then
-			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
-		end
-	end,
-})
-
 -- doesn't fill the first autocomplete suggestion
 vim.cmd("set completeopt+=noselect")
 
@@ -127,6 +132,4 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 -- Keymaps
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>") -- remove highlighting after search on esc
 vim.keymap.set("n", "<leader>s", ":Pick files<CR>")
-vim.keymap.set("i", "<c-space>", function() -- show c
-	vim.lsp.completion.get()
-end)
+vim.keymap.set("i", "<C-space>", vim.lsp.completion.get)
