@@ -9,8 +9,8 @@ vim.o.clipboard = "unnamedplus"
 vim.o.ignorecase = true
 
 vim.o.expandtab = true
-vim.o.shiftwidth = 4
-vim.o.tabstop = 4
+vim.o.shiftwidth = 2
+vim.o.tabstop = 2
 vim.o.smartindent = true
 
 -- Diagnostics (show error on the buffer)
@@ -85,18 +85,22 @@ require("lazy").setup({
 				lsp.html.setup({})
 				lsp.ts_ls.setup({})
 				lsp.clangd.setup({})
-
 				require("blink.cmp").setup({})
 			end,
 		},
-		-- formatters : stylua rustfmt google-java-format python-black
+		-- formatters : stylua rustfmt clang-format python-black
 		{
 			"stevearc/conform.nvim",
 			opts = {
 				formatters_by_ft = {
 					lua = { "stylua" },
 					rust = { "rustfmt" },
-					java = { "google-java-format" },
+					c = { "clang-format" },
+					cpp = { "clang-format" },
+					json = { "clang-format" },
+					java = { "clang-format" },
+					javascript = { "clang-format" },
+					typescript = { "clang-format" },
 					python = { "black" },
 				},
 			},
