@@ -1,4 +1,3 @@
--- settings
 vim.g.mapleader = " "
 
 vim.o.number = true
@@ -41,7 +40,6 @@ vim.diagnostic.config({
 	},
 })
 
--- lazy.nvim install
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	vim.fn.system({
@@ -55,10 +53,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- plugins
 require("lazy").setup({
+	checker = { enabled = true },
 	spec = {
-		-- colorscheme
 		{
 			"folke/tokyonight.nvim",
 			lazy = false,
@@ -67,13 +64,8 @@ require("lazy").setup({
 				vim.cmd(":colorscheme tokyonight")
 			end,
 		},
-		-- language server protocol
 		{
 			"neovim/nvim-lspconfig",
-			dependencies = {
-				"saghen/blink.cmp",
-				"rafamadriz/friendly-snippets",
-			},
 			config = function()
 				local lsp = require("lspconfig")
 				-- Servers : lua-language-server jdtls rust-analyzer pyright vscode-langservers-extracted typescript typescript-language-server clang
@@ -85,7 +77,6 @@ require("lazy").setup({
 				lsp.html.setup({})
 				lsp.ts_ls.setup({})
 				lsp.clangd.setup({})
-				require("blink.cmp").setup({})
 			end,
 		},
 		-- formatters : stylua rustfmt clang-format python-black
@@ -105,14 +96,25 @@ require("lazy").setup({
 				},
 			},
 		},
-		-- fuzzy finder
 		{
-			"nvim-telescope/telescope.nvim",
+			"echasnovski/mini.pick",
 			opts = {},
 		},
-		checker = { enabled = true },
 	},
 })
+
+-- autocompletion
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(ev)
+		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		if client:supports_method("textDocument/completion") then
+			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+		end
+	end,
+})
+
+-- doesn't fill the first autocomplete suggestion
+vim.cmd("set completeopt+=noselect")
 
 -- Format file on save if possible with conform
 vim.api.nvim_create_autocmd("BufWritePre", {
@@ -123,8 +125,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -- Keymaps
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
-local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Find Files" })
-vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "Search current line" })
-vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Search in files" })
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>") -- remove highlighting after search on esc
+vim.keymap.set("n", "<leader>s", ":Pick files<CR>")
+vim.keymap.set("i", "<c-space>", function() -- show c
+	vim.lsp.completion.get()
+end)
